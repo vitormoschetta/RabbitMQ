@@ -17,11 +17,14 @@ namespace Producer
                 // cria canal de comunicação com o RabbitMQ
                 // declara fila que iremos trabalhar com nome "hello"
                 // declarar uma fila é idempotente - se ela não existir será criada
-                channel.QueueDeclare(queue: "queue1",
-                                     durable: false,
+                channel.QueueDeclare(queue: "queue2",
+                                     durable: true,
                                      exclusive: false,
                                      autoDelete: false,
                                      arguments: null);
+
+                var properties = channel.CreateBasicProperties();
+                properties.Persistent = true;
 
                 for (int i = 0; i < 10; i++)
                 {
@@ -32,12 +35,12 @@ namespace Producer
                     var body = Encoding.UTF8.GetBytes(message);
 
                     channel.BasicPublish(exchange: "",
-                                     routingKey: "queue1",
-                                     basicProperties: null,
+                                     routingKey: "queue2",
+                                     basicProperties: properties,
                                      body: body);
 
-                    Console.WriteLine(" [x] Sent {0}", message);                                    
-                }                
+                    Console.WriteLine(" [x] Sent {0}", message);
+                }
             }
 
         }

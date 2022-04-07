@@ -17,8 +17,8 @@ namespace Consumer2
                 // cria canal de comunicação com o RabbitMQ
                 // declara fila que iremos trabalhar com nome "hello"
                 // declarar uma fila é idempotente - se ela não existir será criada
-                channel.QueueDeclare(queue: "queue1",
-                                     durable: false,
+                channel.QueueDeclare(queue: "queue2",
+                                     durable: true,
                                      exclusive: false,
                                      autoDelete: false,
                                      arguments: null);
@@ -37,7 +37,7 @@ namespace Consumer2
 
                 // autoAck: true - a mensagem é automaticamente removida da fila
                 // autoAck: false - o RabbitMQ aguarda a confirmação do consumidor para remover a mensagem da fila
-                channel.BasicConsume(queue: "queue1", autoAck: false, consumer: consumer);
+                channel.BasicConsume(queue: "queue2", autoAck: false, consumer: consumer);
 
                 Console.WriteLine(" Press [enter] to exit.");
                 Console.ReadLine();
