@@ -1,0 +1,10 @@
+version: '3.7'
+services:
+  rabbitmq:    
+    image: rabbitmq:3   
+    container_name: rabbitmq
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - 5672:5672
+      - 15672:15672
