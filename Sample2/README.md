@@ -3,7 +3,7 @@
 Aprendemos no **Sample1** como garantir que, mesmo que um dos consumidores morra, a tarefa não seja perdida.  
 Mas nossas tarefas ainda serão perdidas se o servidor RabbitMQ parar.
 
-Primeiro, precisamos ter certeza de que a fila sobreviverá a uma reinicialização do nó RabbitMQ. Para fazer isso:
+Primeiro, precisamos ter certeza de que a fila sobreviverá a uma reinicialização do nó RabbitMQ. Para fazer isso precisamos atualizar o **Producer**:
 ```
 var properties = channel.CreateBasicProperties();
 properties.Persistent = true;
@@ -17,7 +17,7 @@ channel.BasicPublish(exchange: "",
     body: body);
 ```
 
-Segundo, precisamos dizer que a fila é durável, ou seja, cada novo consumidor que entrar vai consumir todas as mensagens desde o início:
+Segundo, precisamos dizer que a fila é durável, ou seja, cada novo consumidor que entrar vai consumir todas as mensagens desde o início (Atualizar também nos **Consumers**):
 ```
 channel.QueueDeclare(queue: "hello",
                      durable: true,
