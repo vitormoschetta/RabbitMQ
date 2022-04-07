@@ -13,14 +13,14 @@ namespace Consumer
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
-                channel.QueueDeclare(queue: "queue3",
-                                     durable: true,
-                                     exclusive: false,
-                                     autoDelete: false,
-                                     arguments: null);
+                // Declare the exchange
+                // fanout é um tipo de exchange que envia mensagens para todos os consumidores
+                channel.ExchangeDeclare(exchange: "exchange1", type: "fanout");
 
-                // Configura o consumer para nao consumir mensagens novas enquanto esta processando
-                channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+                var queueName = channel.QueueDeclare().QueueName;
+                channel.QueueBind(queue: queueName,
+                                  exchange: "exchange1",
+                                  routingKey: "");
 
                 var consumer = new EventingBasicConsumer(channel);
 
@@ -29,13 +29,10 @@ namespace Consumer
                     var body = ea.Body.ToArray();
                     var message = Encoding.UTF8.GetString(body);
 
-                    // Configura o consumer para nao consumir mensagens novas enquanto esta processando
-                    channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
-                    
                     Console.WriteLine(" [x] Received {0}", message);
                 };
 
-                channel.BasicConsume(queue: "queue3", autoAck: false, consumer: consumer);
+                channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
 
                 Console.WriteLine(" Press [enter] to exit.");
                 Console.ReadLine();

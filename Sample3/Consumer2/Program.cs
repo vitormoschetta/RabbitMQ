@@ -20,6 +20,7 @@ namespace Consumer2
                                      autoDelete: false,
                                      arguments: null);
 
+                // Configura o consumer para nao consumir mensagens novas enquanto esta processando
                 channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
 
                 var consumer = new EventingBasicConsumer(channel);
@@ -28,6 +29,8 @@ namespace Consumer2
                 {
                     var body = ea.Body.ToArray();
                     var message = Encoding.UTF8.GetString(body);
+
+                    // Configura o consumer para nao consumir mensagens novas enquanto esta processando
                     channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
                     
                     Console.WriteLine(" [x] Received {0}", message);
